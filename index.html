@@ -1,0 +1,7 @@
+<!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet href=css/style.css><title>Finance V3 Part1 Final</title></head><body>
+<header><h1>💰 Finance V3 Part 1 Final</h1><button id=t>🌙/☀️</button></header>
+<div id=stats class=cards></div>
+<div class=panel><input id=search placeholder=Cari oninput=render()><select id=filter onchange=render()><option value=all>Semua</option><option value=income>Pemasukan</option><option value=expense>Pengeluaran</option></select></div>
+<div class=panel><input id=desc placeholder=Catatan><input id=amt type=number placeholder=Nominal><input id=date type=date><select id=cat><option>Makan</option><option>Game</option><option>Transport</option><option>Lainnya</option></select><select id=type><option value=income>Pemasukan</option><option value=expense>Pengeluaran</option></select><button onclick=add()>Tambah/Simpan</button></div>
+<div class=panel>Target Tabungan <input id=goal type=number oninput=saveGoal()><progress id=prog max=100 value=0></progress><button onclick=exp()>Export</button><input type=file onchange=imp(event)></div>
+<ul id=list></ul><script src=js/app.js></script></body></html>
