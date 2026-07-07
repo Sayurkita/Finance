@@ -1,7 +1,172 @@
-<!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet href=css/style.css><title>Finance V3 Part1 Final</title></head><body>
-<header><h1>💰 Finance V3 Part 1 Final</h1><button id=t>🌙/☀️</button></header>
-<div id=stats class=cards></div>
-<div class=panel><input id=search placeholder=Cari oninput=render()><select id=filter onchange=render()><option value=all>Semua</option><option value=income>Pemasukan</option><option value=expense>Pengeluaran</option></select></div>
-<div class=panel><input id=desc placeholder=Catatan><input id=amt type=number placeholder=Nominal><input id=date type=date><select id=cat><option>Makan</option><option>Game</option><option>Transport</option><option>Lainnya</option></select><select id=type><option value=income>Pemasukan</option><option value=expense>Pengeluaran</option></select><button onclick=add()>Tambah/Simpan</button></div>
-<div class=panel>Target Tabungan <input id=goal type=number oninput=saveGoal()><progress id=prog max=100 value=0></progress><button onclick=exp()>Export</button><input type=file onchange=imp(event)></div>
-<ul id=list></ul><script src=js/app.js></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Finance Manager</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-container">
+      <div class="header-content">
+        <h1 class="header-title">💰 Personal Finance Manager</h1>
+        <p class="header-subtitle">Track your income, expenses, and savings</p>
+      </div>
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+        <span class="theme-icon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-container">
+    <!-- Dashboard Section -->
+    <section class="dashboard-section">
+      <div class="dashboard-grid">
+        <div class="stat-card income-card">
+          <div class="stat-label">Total Income</div>
+          <div class="stat-value" id="totalIncome">$0.00</div>
+          <div class="stat-subtitle">All time earnings</div>
+        </div>
+        <div class="stat-card expense-card">
+          <div class="stat-label">Total Expenses</div>
+          <div class="stat-value" id="totalExpense">$0.00</div>
+          <div class="stat-subtitle">All time spending</div>
+        </div>
+        <div class="stat-card balance-card">
+          <div class="stat-label">Net Balance</div>
+          <div class="stat-value" id="netBalance">$0.00</div>
+          <div class="stat-subtitle">Income - Expenses</div>
+        </div>
+        <div class="stat-card savings-card">
+          <div class="stat-label">Savings Rate</div>
+          <div class="stat-value" id="savingsRate">0%</div>
+          <div class="stat-subtitle">Of total income</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Savings Goal Section -->
+    <section class="savings-goal-section">
+      <div class="savings-header">
+        <h2>Savings Goal</h2>
+        <div class="savings-controls">
+          <input 
+            type="number" 
+            id="goal" 
+            class="goal-input"
+            placeholder="Set your savings target"
+            oninput="saveGoal()"
+            min="0"
+            step="100"
+          >
+          <div class="goal-stats">
+            <span id="goalProgress">$0 / $0</span>
+          </div>
+        </div>
+      </div>
+      <progress id="prog" class="progress-bar" max="100" value="0"></progress>
+      <div class="goal-actions">
+        <button class="btn btn-export" onclick="exportData()">📥 Export Data</button>
+        <label class="btn btn-import">
+          📤 Import Data
+          <input type="file" id="importFile" onchange="importData(event)" style="display:none;">
+        </label>
+      </div>
+    </section>
+
+    <!-- Input Section -->
+    <section class="input-section">
+      <h2>Add Transaction</h2>
+      <div class="input-form">
+        <div class="form-group">
+          <label for="desc">Description</label>
+          <input 
+            type="text" 
+            id="desc" 
+            class="input-field"
+            placeholder="What is this transaction for?"
+          >
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="amt">Amount</label>
+            <div class="amount-input">
+              <span class="currency-symbol">$</span>
+              <input 
+                type="number" 
+                id="amt" 
+                class="input-field"
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+              >
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="type">Type</label>
+            <select id="type" class="input-field">
+              <option value="income">Income</option>
+              <option value="expense">Expense</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="cat">Category</label>
+            <select id="cat" class="input-field">
+              <option>Salary</option>
+              <option>Freelance</option>
+              <option>Investment</option>
+              <option>Food</option>
+              <option>Transportation</option>
+              <option>Utilities</option>
+              <option>Entertainment</option>
+              <option>Shopping</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input 
+              type="date" 
+              id="date" 
+              class="input-field"
+            >
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="addTransaction()">Add Transaction</button>
+      </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filter-section">
+      <div class="filter-controls">
+        <input 
+          type="text" 
+          id="search" 
+          class="search-field"
+          placeholder="🔍 Search transactions..."
+          oninput="render()"
+        >
+        <select id="filter" class="filter-field" onchange="render()">
+          <option value="all">All Transactions</option>
+          <option value="income">Income Only</option>
+          <option value="expense">Expenses Only</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Transactions List -->
+    <section class="transactions-section">
+      <h2>Recent Transactions</h2>
+      <ul id="list" class="transactions-list"></ul>
+      <div id="emptyState" class="empty-state" style="display:none;">
+        <p>No transactions yet. Start by adding your first transaction!</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
